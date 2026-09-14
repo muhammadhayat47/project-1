@@ -1,0 +1,29 @@
+services:
+  backend:
+    build: ./backend
+    container_name: careeros-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./data/careeros.db
+      - CORS_ORIGINS=http://localhost,http://localhost:80
+      # Optional — uncomment and set to unlock GPT-4o roadmaps/cover letters:
+      # - OPENAI_API_KEY=sk-...
+      # Optional — uncomment and set to pull live job listings:
+      # - ADZUNA_APP_ID=...
+      # - ADZUNA_APP_KEY=...
+    volumes:
+      - careeros-data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: careeros-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  careeros-data:

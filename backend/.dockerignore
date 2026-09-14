@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+careeros.db
+tests/
+.pytest_cache/

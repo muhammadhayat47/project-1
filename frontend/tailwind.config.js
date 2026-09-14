@@ -1,0 +1,75 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
+  theme: {
+    extend: {
+      colors: {
+        ink: {
+          50: "#F1F2F8",
+          100: "#E4E7EE",
+          200: "#C7CCDC",
+          300: "#9AA1BC",
+          400: "#6B7396",
+          500: "#4A5178",
+          600: "#363C5C",
+          700: "#262A44",
+          800: "#191C30",
+          900: "#0F1428",
+          950: "#0A0D1C",
+        },
+        signal: {
+          50: "#EEF0FF",
+          100: "#DFE2FF",
+          200: "#C1C6FF",
+          300: "#9AA0FB",
+          400: "#6E70EF",
+          500: "#4A48E0",
+          600: "#3538CD",
+          700: "#2B2CA3",
+          800: "#232480",
+          900: "#1D1F63",
+        },
+        forecast: {
+          50: "#E9FBF7",
+          100: "#CDF5EB",
+          200: "#9BE9D8",
+          300: "#5FD5BF",
+          400: "#2FB9A3",
+          500: "#12897A",
+          600: "#0E6F65",
+          700: "#0C5A53",
+        },
+        risk: {
+          low: "#1E8E5A",
+          medium: "#C98A1B",
+          high: "#C0392B",
+        },
+        paper: "#F5F5FF",
+        glow: {
+          50: "#E8FFF6",
+          100: "#C6FFE9",
+          200: "#8FFFD4",
+          300: "#4DF5B8",
+          400: "#1FE39C",
+          500: "#00C97F",
+          600: "#00A868",
+          700: "#008554",
+        },
+      },
+      fontFamily: {
+        display: ["'Space Grotesk'", "system-ui", "sans-serif"],
+        body: ["'Inter'", "system-ui", "sans-serif"],
+      },
+      boxShadow: {
+        card: "0 1px 2px rgba(15, 20, 40, 0.04), 0 1px 1px rgba(15, 20, 40, 0.03)",
+        raised: "0 8px 24px -8px rgba(15, 20, 40, 0.18)",
+        glow: "0 0 40px -8px rgba(0, 201, 127, 0.45)",
+        "glow-lg": "0 0 80px -12px rgba(0, 201, 127, 0.5)",
+      },
+      borderRadius: {
+        xl2: "1.25rem",
+      },
+    },
+  },
+  plugins: [],
+};

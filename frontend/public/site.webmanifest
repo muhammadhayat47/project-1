@@ -1,0 +1,12 @@
+{
+  "name": "CareerOS — AI Career Intelligence",
+  "short_name": "CareerOS",
+  "description": "Predictive hiring analytics, salary mapping, an AI career copilot, skill-gap analysis, job-risk scoring, and an autonomous job-application agent.",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "theme_color": "#3538CD",
+  "background_color": "#F7F8FB",
+  "display": "standalone",
+  "start_url": "/"
+}
