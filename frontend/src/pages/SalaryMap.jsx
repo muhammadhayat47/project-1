@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 import { Globe2, ArrowUpDown, Info, TrendingUp, Wifi, DollarSign, X, MousePointerClick } from "lucide-react";
 import { api, apiErrorMessage } from "../api/client";
@@ -9,6 +9,18 @@ import Button from "../components/ui/Button";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const MAP_SCALE = 148;
+// react-simple-maps' default projection (geoEqualEarth) centered on [0, 0]
+// with the given scale — this mirrors its internal math closely enough to
+// place an HTML label over the right spot on the rendered SVG.
+function project(lon, lat, width, height) {
+  const λ = (lon * Math.PI) / 180;
+  const φ = (lat * Math.PI) / 180;
+  // Equirectangular approximation (good enough for label placement at this scale)
+  const x = width / 2 + (λ * MAP_SCALE * width) / 800;
+  const y = height / 2 - (φ * MAP_SCALE * width) / 800;
+  return [x, y];
+}
 
 function formatUsd(n) {
   return `$${Math.round(n).toLocaleString()}`;
@@ -24,6 +36,8 @@ export default function SalaryMap() {
   const [error, setError] = useState("");
   const [sortKey, setSortKey] = useState("median_salary_usd");
   const [selected, setSelected] = useState(null); // clicked country — stays open until closed
+  const [mapSize, setMapSize] = useState({ width: 800, height: 450 });
+  const mapContainerElRef = useRef(null);
 
   async function fetchMap(r) {
     setLoading(true);
@@ -52,6 +66,34 @@ export default function SalaryMap() {
   function handleDotClick(point) {
     setSelected((prev) => (prev?.country_code === point.country_code ? null : point));
   }
+
+  useEffect(() => {
+    const node = mapContainerElRef.current;
+    if (!node) return;
+
+    const resize = () => {
+      const width = node.offsetWidth;
+      if (width > 0) {
+        setMapSize((prev) => {
+          const height = width * (450 / 800);
+          if (Math.abs(prev.width - width) < 1) return prev; // no real change — skip update
+          return { width, height };
+        });
+      }
+    };
+
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [data]); // re-measure once the map card actually renders with data
+
+  const selectedPos = selected ? project(selected.lon, selected.lat, mapSize.width, mapSize.height) : null;
+  // Keep the card on-screen even when the country is near the map edge.
+  const labelLeft = selectedPos
+    ? Math.min(Math.max(selectedPos[0] - 100, 8), mapSize.width - 208)
+    : 0;
+  const labelBelow = selectedPos ? selectedPos[1] < 130 : false;
 
   return (
     <div className="space-y-6">
@@ -136,8 +178,8 @@ export default function SalaryMap() {
               </div>
               <Globe2 className="text-glow-400" size={20} />
             </div>
-            <div className="relative bg-ink-950/40">
-              <ComposableMap projectionConfig={{ scale: 148 }} style={{ width: "100%", height: "auto" }}>
+            <div className="relative bg-ink-950/40" ref={mapContainerRef}>
+              <ComposableMap projectionConfig={{ scale: MAP_SCALE }} style={{ width: "100%", height: "auto" }}>
                 <Geographies geography={GEO_URL}>
                   {({ geographies }) =>
                     geographies.map((geo) => (
@@ -164,39 +206,59 @@ export default function SalaryMap() {
                 })}
               </ComposableMap>
 
-              {/* Detail card — opens on click, stays open until closed */}
-              {selected ? (
-                <div className="absolute left-4 top-4 w-64 rounded-lg border border-glow-400/40 bg-ink-900/95 p-4 text-sm shadow-glow-lg backdrop-blur">
-                  <div className="mb-3 flex items-start justify-between gap-2">
-                    <p className="font-display text-base font-semibold text-white">{selected.country}</p>
+              {/* Detail card — positioned directly over the clicked dot on the map */}
+              {selected && selectedPos ? (
+                <div
+                  className="absolute w-52 rounded-lg border border-glow-400/50 bg-ink-900/95 p-3 text-xs shadow-glow-lg backdrop-blur transition-all"
+                  style={{
+                    left: labelLeft,
+                    top: labelBelow ? selectedPos[1] + 16 : undefined,
+                    bottom: labelBelow ? undefined : mapSize.height - selectedPos[1] + 16,
+                  }}
+                >
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <p className="font-display text-sm font-semibold text-white">{selected.country}</p>
                     <button
                       onClick={() => setSelected(null)}
                       aria-label="Close details"
                       className="shrink-0 text-ink-400 hover:text-white"
                     >
-                      <X size={16} />
+                      <X size={13} />
                     </button>
                   </div>
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between rounded-md bg-white/5 px-2.5 py-2">
-                      <span className="flex items-center gap-1.5 text-xs text-ink-300">
-                        <DollarSign size={13} className="text-glow-300" /> Median salary
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between rounded bg-white/5 px-2 py-1.5">
+                      <span className="flex items-center gap-1 text-ink-300">
+                        <DollarSign size={11} className="text-glow-300" /> Salary
                       </span>
-                      <span className="font-display text-sm font-semibold text-white">{formatUsd(selected.median_salary_usd)}</span>
+                      <span className="font-semibold text-white">{formatUsd(selected.median_salary_usd)}</span>
                     </div>
-                    <div className="flex items-center justify-between rounded-md bg-white/5 px-2.5 py-2">
-                      <span className="flex items-center gap-1.5 text-xs text-ink-300">
-                        <Wifi size={13} className="text-signal-300" /> Remote jobs
+                    <div className="flex items-center justify-between rounded bg-white/5 px-2 py-1.5">
+                      <span className="flex items-center gap-1 text-ink-300">
+                        <Wifi size={11} className="text-signal-300" /> Remote
                       </span>
-                      <span className="font-display text-sm font-semibold text-white">{selected.remote_share_pct}%</span>
+                      <span className="font-semibold text-white">{selected.remote_share_pct}%</span>
                     </div>
-                    <div className="flex items-center justify-between rounded-md bg-white/5 px-2.5 py-2">
-                      <span className="flex items-center gap-1.5 text-xs text-ink-300">
-                        <TrendingUp size={13} className="text-glow-300" /> Demand
+                    <div className="flex items-center justify-between rounded bg-white/5 px-2 py-1.5">
+                      <span className="flex items-center gap-1 text-ink-300">
+                        <TrendingUp size={11} className="text-glow-300" /> Demand
                       </span>
-                      <span className="font-display text-sm font-semibold text-white">{selected.demand_index} / 1.0</span>
+                      <span className="font-semibold text-white">{selected.demand_index} / 1.0</span>
                     </div>
                   </div>
+                  {/* small pointer triangle toward the dot */}
+                  <div
+                    className="absolute h-2.5 w-2.5 rotate-45 border border-glow-400/50 bg-ink-900"
+                    style={{
+                      left: Math.min(Math.max(selectedPos[0] - labelLeft - 5, 10), 190),
+                      top: labelBelow ? -5 : undefined,
+                      bottom: labelBelow ? undefined : -5,
+                      borderTop: labelBelow ? "inherit" : "none",
+                      borderLeft: labelBelow ? "inherit" : "none",
+                      borderBottom: labelBelow ? "none" : "inherit",
+                      borderRight: labelBelow ? "none" : "inherit",
+                    }}
+                  />
                 </div>
               ) : (
                 <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-1.5 rounded-lg border border-white/10 bg-ink-900/80 px-3 py-2 text-xs text-ink-300 backdrop-blur">
