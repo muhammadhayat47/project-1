@@ -25,13 +25,13 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-paper px-6 text-center">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-risk-high">
+        <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-ink-950 px-6 text-center">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/15 text-red-300">
             <AlertTriangle size={26} />
           </span>
           <div>
-            <h1 className="font-display text-xl font-semibold text-ink-900">Something went wrong</h1>
-            <p className="mt-1.5 max-w-sm text-sm text-ink-500">
+            <h1 className="font-display text-xl font-semibold text-white">Something went wrong</h1>
+            <p className="mt-1.5 max-w-sm text-sm text-ink-300">
               This part of CareerOS hit an unexpected error. Your data is safe — try reloading this section.
             </p>
           </div>

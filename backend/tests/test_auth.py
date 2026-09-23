@@ -25,7 +25,7 @@ def test_register_duplicate_email_is_rejected(client):
 def test_login_with_wrong_password_is_rejected(client):
     client.post(
         "/api/auth/register",
-        json={"full_name": "Alan Turing", "email": "alan@example.com", "password": "correct-horse"},
+        json={"full_name": "Alan Turing", "email": "alan@example.com", "password": "correct-horse1"},
     )
     res = client.post("/api/auth/login", json={"email": "alan@example.com", "password": "wrong-password"})
     assert res.status_code == 401
@@ -40,6 +40,41 @@ def test_me_returns_current_user(client, auth_headers):
     res = client.get("/api/auth/me", headers=auth_headers)
     assert res.status_code == 200
     assert res.json()["email"] == "pytest.user@careeros.test"
+
+
+def test_forgot_password_returns_generic_message_for_unknown_email(client):
+    res = client.post("/api/auth/forgot-password", json={"email": "nobody@example.com"})
+    assert res.status_code == 200
+    assert "reset link has been sent" in res.json()["message"]
+    # No account exists, so no token should ever be issued.
+    assert res.json()["debug_reset_token"] is None
+
+
+def test_forgot_password_then_reset_password_flow(client):
+    client.post(
+        "/api/auth/register",
+        json={"full_name": "Reset Me", "email": "reset.me@example.com", "password": "oldpass123"},
+    )
+
+    forgot_res = client.post("/api/auth/forgot-password", json={"email": "reset.me@example.com"})
+    assert forgot_res.status_code == 200
+    token = forgot_res.json()["debug_reset_token"]
+    assert token  # demo mode (no SMTP) returns it for testability
+
+    reset_res = client.post("/api/auth/reset-password", json={"token": token, "new_password": "newpass456"})
+    assert reset_res.status_code == 200
+    assert reset_res.json()["email"] == "reset.me@example.com"
+
+    # Old password should no longer work; new password should.
+    old_login = client.post("/api/auth/login", json={"email": "reset.me@example.com", "password": "oldpass123"})
+    assert old_login.status_code == 401
+    new_login = client.post("/api/auth/login", json={"email": "reset.me@example.com", "password": "newpass456"})
+    assert new_login.status_code == 200
+
+
+def test_reset_password_rejects_invalid_token(client):
+    res = client.post("/api/auth/reset-password", json={"token": "not-a-real-token", "new_password": "newpass456"})
+    assert res.status_code == 400
 
 
 def test_update_profile_sets_target_role(client, auth_headers):

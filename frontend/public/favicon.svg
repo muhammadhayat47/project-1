@@ -1,4 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="#3538CD"/>
-  <path d="M16 6.5 L18.2 13.2 L25 15.4 L18.2 17.6 L16 24.3 L13.8 17.6 L7 15.4 L13.8 13.2 Z" fill="#FFFFFF"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <defs>
+    <linearGradient id="favBg" x1="2" y1="38" x2="38" y2="2" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7B2FF7"/>
+      <stop offset="35%" stop-color="#3538CD"/>
+      <stop offset="70%" stop-color="#00B8D9"/>
+      <stop offset="100%" stop-color="#1FE39C"/>
+    </linearGradient>
+    <linearGradient id="favArrow" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF6B6B" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#FFD93D" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="38" height="38" rx="11" fill="url(#favBg)"/>
+  <path d="M27.5 13.2A9 9 0 1 0 27.5 26.8" stroke="white" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+  <path d="M18.5 24 L25 13.8 M25 13.8 L20.4 14.6 M25 13.8 L24.2 18.4" stroke="url(#favArrow)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="25" cy="13.8" r="2.6" fill="#FFD93D"/>
 </svg>

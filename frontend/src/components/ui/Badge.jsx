@@ -1,10 +1,10 @@
 const TONES = {
-  neutral: "bg-ink-100 text-ink-600",
-  signal: "bg-signal-100 text-signal-700",
-  forecast: "bg-forecast-100 text-forecast-700",
-  low: "bg-emerald-50 text-risk-low",
-  medium: "bg-amber-50 text-risk-medium",
-  high: "bg-red-50 text-risk-high",
+  neutral: "bg-white/10 text-ink-200",
+  signal: "border border-signal-400/30 bg-signal-500/10 text-signal-300",
+  forecast: "border border-glow-400/30 bg-glow-500/10 text-glow-300",
+  low: "border border-glow-400/30 bg-glow-500/10 text-glow-300",
+  medium: "border border-amber-400/30 bg-amber-500/10 text-amber-300",
+  high: "border border-red-400/30 bg-red-500/10 text-red-300",
 };
 
 export default function Badge({ tone = "neutral", children, className = "" }) {

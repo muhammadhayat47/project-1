@@ -1,10 +1,10 @@
 import { forwardRef } from "react";
 
 const VARIANTS = {
-  primary: "bg-signal-600 text-white hover:bg-signal-700 shadow-card",
-  secondary: "bg-white text-ink-800 border border-ink-100 hover:border-ink-200 hover:bg-ink-50",
-  ghost: "text-ink-600 hover:bg-ink-100",
-  danger: "bg-white text-risk-high border border-risk-high/30 hover:bg-red-50",
+  primary: "bg-gradient-to-r from-glow-500 to-glow-600 text-ink-950 hover:brightness-110 shadow-glow font-semibold",
+  secondary: "bg-white/10 text-white border border-white/15 hover:bg-white/15",
+  ghost: "text-ink-300 hover:bg-white/10",
+  danger: "bg-white/10 text-red-300 border border-red-400/30 hover:bg-red-500/10",
 };
 
 const SIZES = {

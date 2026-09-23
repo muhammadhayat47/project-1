@@ -23,7 +23,7 @@ export default function AppLayout() {
   useDocumentTitle(title);
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "linear-gradient(135deg, #4A48E0 0%, #262A44 50%, #0E6F65 100%)" }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: "linear-gradient(135deg, #1D1F63 0%, #0A0D1C 50%, #08332E 100%)" }}>
       <Sidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar title={title} onMenuClick={() => setMobileNavOpen(true)} />

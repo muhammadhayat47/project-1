@@ -1,0 +1,42 @@
+services:
+  # Backend API — built from backend/Dockerfile
+  - type: web
+    name: careeros-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+      - key: CORS_ORIGINS
+        value: https://careeros-frontend.onrender.com
+      - key: DATABASE_URL
+        value: sqlite:///./data/careeros.db
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ADZUNA_APP_ID
+        sync: false
+      - key: ADZUNA_APP_KEY
+        sync: false
+    disk:
+      name: careeros-data
+      mountPath: /app/data
+      sizeGB: 1
+
+  # Frontend — static site built from the Vite build output
+  - type: web
+    name: careeros-frontend
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://careeros-backend.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

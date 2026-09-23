@@ -23,6 +23,15 @@ class Settings(BaseSettings):
     ADZUNA_APP_ID: str | None = None
     ADZUNA_APP_KEY: str | None = None
 
+    # Optional: send real password-reset emails via SMTP. Without these, the
+    # reset token is logged server-side (and returned in the API response
+    # only outside production) so the flow is still fully testable.
+    SMTP_HOST: str | None = None
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str | None = None
+    SMTP_PASSWORD: str | None = None
+    SMTP_FROM_EMAIL: str = "no-reply@careeros.app"
+
     # App
     ENVIRONMENT: str = "development"
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
@@ -39,6 +48,10 @@ class Settings(BaseSettings):
     @property
     def live_jobs_enabled(self) -> bool:
         return bool(self.ADZUNA_APP_ID and self.ADZUNA_APP_KEY)
+
+    @property
+    def email_enabled(self) -> bool:
+        return bool(self.SMTP_HOST and self.SMTP_USERNAME and self.SMTP_PASSWORD)
 
 
 @lru_cache

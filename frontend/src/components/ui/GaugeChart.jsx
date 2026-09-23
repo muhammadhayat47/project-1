@@ -30,7 +30,7 @@ export default function GaugeChart({ value = 0, level = "Medium", size = 220 }) 
   return (
     <div className="flex flex-col items-center">
       <svg width={size} height={size / 2 + 24} viewBox={`0 0 ${size} ${size / 2 + 24}`}>
-        <path d={trackPath} fill="none" stroke="#E4E7EE" strokeWidth={14} strokeLinecap="round" />
+        <path d={trackPath} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={14} strokeLinecap="round" />
         <path d={progressPath} fill="none" stroke={color} strokeWidth={14} strokeLinecap="round" />
         <circle cx={cx} cy={cy} r={5} fill={color} />
         <line
@@ -42,7 +42,7 @@ export default function GaugeChart({ value = 0, level = "Medium", size = 220 }) 
           strokeWidth={3}
           strokeLinecap="round"
         />
-        <text x={cx} y={cy - 6} textAnchor="middle" className="font-display" fontSize="28" fontWeight="700" fill="#131A2C">
+        <text x={cx} y={cy - 6} textAnchor="middle" className="font-display" fontSize="28" fontWeight="700" fill="#FFFFFF">
           {clamped.toFixed(0)}%
         </text>
       </svg>

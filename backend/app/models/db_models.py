@@ -16,6 +16,8 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     target_role = Column(String(120), nullable=True)
     target_location = Column(String(120), nullable=True)
+    reset_token = Column(String(64), nullable=True, index=True)
+    reset_token_expires = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     resumes = relationship("ResumeProfile", back_populates="owner", cascade="all, delete-orphan")

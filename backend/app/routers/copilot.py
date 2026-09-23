@@ -39,7 +39,7 @@ def roadmap(
 
 @router.get("/roadmap/history")
 def roadmap_history(
-    current_user: db_models.User = Depends(get_current_user_optional),
+    current_user: db_models.User | None = Depends(get_current_user_optional),
     db: Session = Depends(get_db),
 ):
     if not current_user:

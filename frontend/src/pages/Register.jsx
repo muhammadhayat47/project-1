@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Sparkles, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import Button from "../components/ui/Button";
+import Logo from "../components/ui/Logo";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
 export default function Register() {
@@ -32,59 +33,60 @@ export default function Register() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-6">
-      <div className="w-full max-w-sm animate-rise">
-        <Link to="/" className="mb-8 flex items-center justify-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-signal-600">
-            <Sparkles size={16} className="text-white" />
-          </span>
-          <span className="font-display text-lg font-semibold text-ink-900">CareerOS</span>
+    <div className="flex min-h-screen items-center justify-center bg-ink-950 px-6">
+      <div className="pointer-events-none fixed -top-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-glow-500/15 blur-[120px]" />
+      <div className="pointer-events-none fixed bottom-0 left-0 h-[24rem] w-[24rem] rounded-full bg-signal-500/15 blur-[120px]" />
+
+      <div className="relative w-full max-w-sm animate-rise">
+        <Link to="/" className="mb-8 flex items-center justify-center gap-3">
+          <Logo size={38} />
+          <span className="font-display text-xl font-semibold text-white">CareerOS</span>
         </Link>
 
-        <div className="rounded-xl2 border border-ink-100 bg-white p-7 shadow-card">
-          <h1 className="font-display text-xl font-semibold text-ink-900">Create your account</h1>
-          <p className="mt-1 text-sm text-ink-500">Free — save your resume, roadmap, and applications.</p>
+        <div className="rounded-xl2 border border-white/10 bg-ink-900/60 p-7 shadow-glow backdrop-blur-xl">
+          <h1 className="font-display text-xl font-semibold text-white">Create your account</h1>
+          <p className="mt-1 text-sm text-ink-300">Free — save your resume, roadmap, and applications.</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-ink-700">Full name</label>
+              <label className="mb-1.5 block text-sm font-medium text-ink-200">Full name</label>
               <input
                 required
                 autoComplete="name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm outline-none focus:border-signal-400 focus:ring-2 focus:ring-signal-100"
+                className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white outline-none placeholder:text-ink-400 focus:border-glow-400 focus:ring-2 focus:ring-glow-400/20"
                 placeholder="Jane Doe"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-ink-700">Email</label>
+              <label className="mb-1.5 block text-sm font-medium text-ink-200">Email</label>
               <input
                 type="email"
                 required
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm outline-none focus:border-signal-400 focus:ring-2 focus:ring-signal-100"
+                className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white outline-none placeholder:text-ink-400 focus:border-glow-400 focus:ring-2 focus:ring-glow-400/20"
                 placeholder="you@example.com"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-ink-700">Password</label>
+              <label className="mb-1.5 block text-sm font-medium text-ink-200">Password</label>
               <input
                 type="password"
                 required
-                minLength={6}
+                minLength={8}
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm outline-none focus:border-signal-400 focus:ring-2 focus:ring-signal-100"
-                placeholder="At least 6 characters"
+                className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white outline-none placeholder:text-ink-400 focus:border-glow-400 focus:ring-2 focus:ring-glow-400/20"
+                placeholder="At least 8 characters, with a letter and a number"
               />
             </div>
 
             {error && (
-              <div className="flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-risk-high" role="alert">
+              <div className="flex items-start gap-2 rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-300" role="alert">
                 <AlertCircle size={16} className="mt-0.5 shrink-0" />
                 {error}
               </div>
@@ -95,9 +97,9 @@ export default function Register() {
             </Button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-ink-500">
+          <p className="mt-5 text-center text-sm text-ink-300">
             Already have an account?{" "}
-            <Link to="/login" className="font-medium text-signal-600 hover:underline">
+            <Link to="/login" className="font-medium text-glow-300 hover:underline">
               Log in
             </Link>
           </p>

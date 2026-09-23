@@ -5,9 +5,10 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from sqlalchemy import text
 
 from app.config import get_settings
-from app.database import init_db
+from app.database import SessionLocal, init_db
 from app.routers import auth, autoapply, copilot, dashboard, hiring, risk, salary, skillgap
 
 logging.basicConfig(level=logging.INFO)
@@ -30,6 +31,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def security_headers_middleware(request: Request, call_next):
+    """Standard hardening headers on every response — cheap, well-understood
+    defenses against clickjacking, MIME-sniffing, and referrer leakage."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    if settings.ENVIRONMENT == "production":
+        response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains"
+    return response
 
 
 @app.exception_handler(RequestValidationError)
@@ -66,10 +81,22 @@ def on_startup():
 
 @app.get("/api/health")
 def health():
+    db_ok = True
+    try:
+        db = SessionLocal()
+        try:
+            db.execute(text("SELECT 1"))
+        finally:
+            db.close()
+    except Exception:
+        db_ok = False
+
     return {
-        "status": "ok",
+        "status": "ok" if db_ok else "degraded",
+        "database": "ok" if db_ok else "unreachable",
         "ai_enabled": settings.ai_enabled,
         "live_jobs_enabled": settings.live_jobs_enabled,
+        "email_enabled": settings.email_enabled,
     }
 
 

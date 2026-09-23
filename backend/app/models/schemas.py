@@ -1,19 +1,50 @@
 """Pydantic request/response schemas shared across routers."""
+import re
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 # ---- Auth -------------------------------------------------------------
 class UserCreate(BaseModel):
     full_name: str = Field(min_length=2, max_length=120)
     email: EmailStr
-    password: str = Field(min_length=6, max_length=128)
+    password: str = Field(min_length=8, max_length=128)
+
+    @field_validator("password")
+    @classmethod
+    def password_strength(cls, v: str) -> str:
+        if not re.search(r"[A-Za-z]", v) or not re.search(r"\d", v):
+            raise ValueError("Password must contain at least one letter and one number.")
+        return v
 
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ForgotPasswordOut(BaseModel):
+    message: str
+    # Only populated outside production (no SMTP configured) so the reset
+    # flow stays testable without a mail provider. Never sent in prod.
+    debug_reset_token: str | None = None
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(min_length=8, max_length=128)
+
+    @field_validator("new_password")
+    @classmethod
+    def password_strength(cls, v: str) -> str:
+        if not re.search(r"[A-Za-z]", v) or not re.search(r"\d", v):
+            raise ValueError("Password must contain at least one letter and one number.")
+        return v
 
 
 class UserOut(BaseModel):

@@ -64,7 +64,7 @@ export default function SkillGap() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
-          <p className="mb-3 text-sm font-medium text-ink-700">1. Your resume</p>
+          <p className="mb-3 text-sm font-medium text-ink-200">1. Your resume</p>
           {uploading ? (
             <Loader label="Reading your resume…" />
           ) : (
@@ -78,18 +78,18 @@ export default function SkillGap() {
             onChange={(e) => setResume(e.target.value, resumeFileName || "pasted-resume.txt", [])}
             rows={6}
             placeholder="Paste your resume text here…"
-            className="mt-2 w-full rounded-lg border border-ink-200 p-3 text-sm outline-none focus:border-signal-400"
+            className="mt-2 w-full rounded-lg border border-white/15 bg-white/5 p-3 text-sm text-white outline-none placeholder:text-ink-400 focus:border-glow-400"
           />
         </Card>
 
         <Card>
-          <p className="mb-3 text-sm font-medium text-ink-700">2. Job description</p>
+          <p className="mb-3 text-sm font-medium text-ink-200">2. Job description</p>
           <textarea
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             rows={10}
             placeholder="Paste the job description you're targeting…"
-            className="w-full rounded-lg border border-ink-200 p-3 text-sm outline-none focus:border-signal-400"
+            className="w-full rounded-lg border border-white/15 bg-white/5 p-3 text-sm text-white outline-none placeholder:text-ink-400 focus:border-glow-400"
           />
         </Card>
       </div>
@@ -98,26 +98,26 @@ export default function SkillGap() {
         <FileSearch size={16} /> Analyze skill gap
       </Button>
 
-      {error && !result && <Card className="text-sm text-risk-high">{error}</Card>}
+      {error && !result && <Card className="text-sm text-red-300">{error}</Card>}
 
       {result && (
         <div className="space-y-6">
           <Card className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             <div>
               <p className="text-xs font-medium text-ink-400">Overall match</p>
-              <p className="font-display text-4xl font-semibold text-signal-600">{result.match_score_pct}%</p>
+              <p className="font-display text-4xl font-semibold text-glow-300">{result.match_score_pct}%</p>
             </div>
-            <div className="h-2 w-full max-w-sm overflow-hidden rounded-full bg-ink-100 sm:w-64">
-              <div className="h-full rounded-full bg-signal-600 transition-all" style={{ width: `${result.match_score_pct}%` }} />
+            <div className="h-2 w-full max-w-sm overflow-hidden rounded-full bg-white/10 sm:w-64">
+              <div className="h-full rounded-full bg-gradient-to-r from-glow-500 to-glow-400 transition-all" style={{ width: `${result.match_score_pct}%` }} />
             </div>
-            <div className="text-sm text-ink-500">
+            <div className="text-sm text-ink-300">
               {result.matched_skills.length} matched · {result.missing_skills.length} to learn
             </div>
           </Card>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <Card>
-              <p className="mb-3 flex items-center gap-1.5 text-sm font-medium text-forecast-700">
+              <p className="mb-3 flex items-center gap-1.5 text-sm font-medium text-glow-300">
                 <CheckCircle2 size={16} /> Skills you already match
               </p>
               <div className="flex flex-wrap gap-2">
@@ -128,7 +128,7 @@ export default function SkillGap() {
               </div>
             </Card>
             <Card>
-              <p className="mb-3 flex items-center gap-1.5 text-sm font-medium text-risk-high">
+              <p className="mb-3 flex items-center gap-1.5 text-sm font-medium text-red-300">
                 <XCircle size={16} /> Skills to close the gap
               </p>
               <div className="flex flex-wrap gap-2">
@@ -142,14 +142,14 @@ export default function SkillGap() {
 
           {result.recommended_courses.length > 0 && (
             <Card>
-              <p className="mb-4 flex items-center gap-1.5 font-display text-base font-semibold text-ink-900">
-                <GraduationCap size={18} className="text-signal-600" /> Recommended courses
+              <p className="mb-4 flex items-center gap-1.5 font-display text-base font-semibold text-white">
+                <GraduationCap size={18} className="text-glow-400" /> Recommended courses
               </p>
               <div className="space-y-4">
                 {result.recommended_courses.map(({ skill, courses }) => (
-                  <div key={skill} className="flex flex-col gap-1.5 border-b border-ink-100 pb-4 last:border-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
+                  <div key={skill} className="flex flex-col gap-1.5 border-b border-white/10 pb-4 last:border-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
                     <Badge tone="signal" className="w-fit capitalize">{skill}</Badge>
-                    <div className="text-sm text-ink-600">
+                    <div className="text-sm text-ink-300">
                       {courses.map((c) => `${c.title} (${c.provider})`).join(" · ")}
                     </div>
                   </div>

@@ -5,14 +5,14 @@ const ToastContext = createContext(null);
 
 const ICONS = { success: CheckCircle2, error: XCircle, info: Info };
 const TONE_CLASSES = {
-  success: "border-forecast-200 bg-forecast-50 text-forecast-700",
-  error: "border-red-200 bg-red-50 text-risk-high",
-  info: "border-signal-200 bg-signal-50 text-signal-700",
+  success: "border-glow-400/30 bg-ink-900/95 text-glow-300",
+  error: "border-red-400/30 bg-ink-900/95 text-red-300",
+  info: "border-signal-400/30 bg-ink-900/95 text-signal-300",
 };
 const ICON_CLASSES = {
-  success: "text-forecast-500",
-  error: "text-risk-high",
-  info: "text-signal-500",
+  success: "text-glow-400",
+  error: "text-red-400",
+  info: "text-signal-400",
 };
 
 export function ToastProvider({ children }) {

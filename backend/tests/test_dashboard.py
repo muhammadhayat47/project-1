@@ -6,8 +6,10 @@ def test_health_check(client):
     assert res.status_code == 200
     body = res.json()
     assert body["status"] == "ok"
+    assert body["database"] == "ok"
     assert "ai_enabled" in body
     assert "live_jobs_enabled" in body
+    assert "email_enabled" in body
 
 
 def test_dashboard_summary_unauthenticated(client):
